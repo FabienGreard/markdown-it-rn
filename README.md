@@ -262,4 +262,4 @@ Please feel free to open an issue or submit a pull request on GitHub.
 
 ## License
 
-GPL-3.0-or-later
+MIT
