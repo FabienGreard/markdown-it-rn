@@ -2,7 +2,7 @@
   "name": "markdown-it-rn",
   "version": "0.0.0",
   "description": "rn markdown it wrapper using nativewind by default",
-  "main": "./dist/index.js",
+  "main": "./dist/index.cjs",
   "scripts": {
     "build": "tsup",
     "clean": "rm -rf dist",
@@ -66,6 +66,7 @@
     "typescript": "~5.8.3"
   },
   "peerDependencies": {
+    "tailwindcss": "*",
     "nativewind": "*",
     "react": "*",
     "react-native": "*"
@@ -73,10 +74,10 @@
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "react-native": "./dist/index.js",
       "import": "./dist/index.js",
-      "require": "./dist/index.js",
+      "require": "./dist/index.cjs",
       "default": "./dist/index.js"
-    }
+    },
+    "./tailwind.config": "./dist/tailwind.config.js"
   }
 }

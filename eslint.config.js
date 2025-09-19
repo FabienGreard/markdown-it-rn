@@ -7,11 +7,11 @@ import react from 'eslint-plugin-react';
 import reactNative from 'eslint-plugin-react-native';
 
 export default [
-  { ignores: ['dist/**', 'example/**'] },
+  { ignores: ['dist/**', 'example/**', 'tailwind.config.js'] },
   eslint.configs.recommended,
   {
     files: ['**/*.{ts,tsx}'],
-    languageOptions: { 
+    languageOptions: {
       parser: tsParser,
       globals: {
         console: 'readonly',
@@ -33,5 +33,3 @@ export default [
     settings: { react: { version: 'detect' } },
   },
 ];
-
-
