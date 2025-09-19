@@ -8,6 +8,6 @@ export default defineConfig({
   clean: true,
   treeshake: true,
   external: ['react', 'react-native', 'nativewind'],
-  target: 'es2020',
+  target: 'node20',
   minify: true,
 });
