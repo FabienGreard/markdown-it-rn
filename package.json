@@ -20,15 +20,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/yourname/markdown-it-rn.git"
+    "url": "git+https://github.com/FabienGreard/markdown-it-rn.git"
   },
   "keywords": [],
   "author": "",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/yourname/markdown-it-rn/issues"
+    "url": "https://github.com/FabienGreard/markdown-it-rn/issues"
   },
-  "homepage": "https://github.com/yourname/markdown-it-rn#readme",
+  "homepage": "https://github.com/FabienGreard/markdown-it-rn#readme",
   "type": "module",
   "module": "./dist/index.js",
   "types": "dist/index.d.ts",
@@ -37,7 +37,7 @@
     "dist"
   ],
   "engines": {
-    "node": ">=18.0.0"
+    "node": ">=20.0.0"
   },
   "sideEffects": false,
   "publishConfig": {
