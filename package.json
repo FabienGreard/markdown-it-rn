@@ -6,7 +6,7 @@
   "scripts": {
     "build": "tsup",
     "clean": "rm -rf dist",
-    "clear:install": "rm -rf node_modules example/node_modules package-lock.json example/package-lock.json",
+    "clear:install": "rm -rf node_modules example/node_modules package-lock.json example/package-lock.json && npm install && cd example && npm install",
     "lint": "eslint \"src/**/*.{ts,tsx}\"",
     "format": "prettier --write .",
     "tsc": "tsc --noEmit",
@@ -21,7 +21,14 @@
     "type": "git",
     "url": "git+https://github.com/FabienGreard/markdown-it-rn.git"
   },
-  "keywords": [],
+  "keywords": [
+    "react",
+    "react-native",
+    "native",
+    "markdown",
+    "commonmark",
+    "markdown-it"
+  ],
   "author": "",
   "license": "MIT",
   "bugs": {
@@ -43,15 +50,10 @@
     "access": "public"
   },
   "dependencies": {
-    "markdown-it": "^14.1.0",
-    "markdown-it-deflist": "^3.0.0",
-    "markdown-it-emoji": "^3.0.0",
-    "markdown-it-footnote": "^4.0.0"
+    "markdown-it": "^14.1.0"
   },
   "devDependencies": {
     "@types/markdown-it": "^14.1.2",
-    "@types/markdown-it-emoji": "^3.0.1",
-    "@types/markdown-it-footnote": "^3.0.4",
     "@types/react": "^19.1.0",
     "@typescript-eslint/eslint-plugin": "^8.44.0",
     "@typescript-eslint/parser": "^8.44.0",

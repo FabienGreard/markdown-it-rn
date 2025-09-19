@@ -3,6 +3,9 @@ import { StatusBar } from 'expo-status-bar';
 import { ScrollView, Linking } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { MarkdownItRN } from 'markdown-it-rn';
+import deflist from 'markdown-it-deflist';
+import { full as emojiPlugin } from 'markdown-it-emoji';
+import footnote from 'markdown-it-footnote';
 
 import { cssInterop } from 'nativewind';
 
@@ -143,6 +146,7 @@ const NativewindMarkdownItRN = cssInterop(MarkdownItRN, {
   emClassName: {
     target: 'em',
   },
+
   strikethroughClassName: {
     target: 'strikethrough',
   },
@@ -153,7 +157,7 @@ import './global.css';
 const SAMPLE = `
 # markdown-it-rn demo 
 
-## Headings
+## Headings 
 
 ### This is a Level 3 Heading
 
@@ -169,11 +173,11 @@ You can also make some text ***bold and italic*** at the same time.
 
 ### Unordered List
 
-- Item 1
-- Item 2
-  - Subitem 2a
-  - Subitem 2b
-- Item 3
+- Item 1 :P
+- Item 2 :,D
+  - Subitem 2a :)
+  - Subitem 2b :cry:
+- Item 3 :smile: 
 
 ### Ordered List
 
@@ -187,7 +191,7 @@ You can create a [link to Google](https://www.google.com).
 
 ## Images
 
-![Sample Image](https://placehold.co/600x400.png "Sample Image")
+![Sample Image](https://placehold.co/600x400.png "Sample Image") 
 
 ## Blockquotes
 
@@ -252,6 +256,7 @@ export default function App() {
           <NativewindMarkdownItRN
             md={SAMPLE}
             onLinkPress={(href) => Linking.openURL(href)}
+            configure={(md) => md.use(emojiPlugin).use(footnote).use(deflist)}
             /* component style override usage with nativewind */
             rootClassName="p-3 gap-2"
             paragraphClassName="leading-relaxed mb-3"

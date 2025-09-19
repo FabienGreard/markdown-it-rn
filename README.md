@@ -281,38 +281,29 @@ const darkTheme = StyleSheet.create({
 />;
 ```
 
-## Plugins
+## Plugins (opt-in)
 
-The component enables the following markdown-it plugins by default:
+This library ships with a minimal `markdown-it` core. No plugins are enabled by default to reduce bundle size.
 
-- **deflist**: Definition lists
-- **emoji**: Emoji support (`:smile:` → 😄)
-- **footnote**: Footnote support
+Install and enable only what you need in your app:
 
-### Customizing Plugins
-
-Use the `configure` prop to customize the markdown-it instance:
+```bash
+npm i markdown-it markdown-it-emoji markdown-it-footnote markdown-it-deflist
+```
 
 ```tsx
+import { MarkdownItRN } from 'markdown-it-rn';
+import MarkdownIt from 'markdown-it';
+import emoji from 'markdown-it-emoji';
+import footnote from 'markdown-it-footnote';
+import deflist from 'markdown-it-deflist';
+
 <MarkdownItRN
   md={markdown}
   configure={(md) => {
-    // markdown-it defaults used by this component:
-    // - html: false
-    // - linkify: true
-    // - typographer: true
-    // Plugins enabled by default:
-    // - emoji, footnote, deflist
-    // You can tweak options or enable/disable plugins as needed:
-    md.set({ linkify: true, typographer: true });
-    // md.disable('linkify');
-
-    // Add custom plugins
-    // md.use(customPlugin);
-
-    return md;
+    return md.use(emoji).use(footnote).use(deflist);
   }}
-/>
+/>;
 ```
 
 ### Markdown-it Defaults

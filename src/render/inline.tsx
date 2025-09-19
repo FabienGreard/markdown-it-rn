@@ -111,6 +111,16 @@ export function renderInlineTokens(
           break;
         }
 
+        case 'emoji': {
+          // markdown-it-emoji emits tokens with type 'emoji'.
+          // token.content usually contains the unicode glyph; markup may contain the shortcode.
+          const glyph = t.content || t.markup || '';
+          if (glyph) {
+            inner.push(glyph);
+          }
+          break;
+        }
+
         // markdown-it-footnote inline reference
         case 'footnote_ref': {
           const id = (t.meta && (t.meta.id ?? t.meta.label)) ?? 0;
