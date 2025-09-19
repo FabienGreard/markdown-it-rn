@@ -4,56 +4,148 @@ import { ScrollView, Linking } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { MarkdownItRN } from 'markdown-it-rn';
 
-import { remapProps } from 'nativewind';
+import { cssInterop } from 'nativewind';
 
 /* usage with nativewind */
-const NativewindMarkdownItRN = remapProps(MarkdownItRN, {
-  rootClassName: 'root',
-  paragraphClassName: 'paragraph',
-  h1ClassName: 'h1',
-  h2ClassName: 'h2',
-  h3ClassName: 'h3',
-  h4ClassName: 'h4',
-  h5ClassName: 'h5',
-  h6ClassName: 'h6',
-  linkClassName: 'link',
-  imageClassName: 'image',
-  codeBlockContainerClassName: 'codeBlockContainer',
-  codeBlockTextClassName: 'codeBlockText',
-  codeInlineClassName: 'codeInline',
-  blockquoteClassName: 'blockquote',
-  listUlClassName: 'listUl',
-  listOlClassName: 'listOl',
-  listItemClassName: 'listItem',
-  listBulletClassName: 'listBullet',
-  listContentClassName: 'listContent',
-  hrClassName: 'hr',
-  tableContainerClassName: 'tableContainer',
-  tableTheadClassName: 'tableThead',
-  tableTbodyClassName: 'tableTbody',
-  tableRowClassName: 'tableRow',
-  tableThClassName: 'tableTh',
-  tableTdClassName: 'tableTd',
-  tableThTextClassName: 'tableThText',
-  tableTdTextClassName: 'tableTdText',
-  checklistListClassName: 'checklistList',
-  checklistItemClassName: 'checklistItem',
-  checklistBoxClassName: 'checklistBox',
-  checklistCheckedClassName: 'checklistChecked',
-  checklistUncheckedClassName: 'checklistUnchecked',
-  checklistLabelClassName: 'checklistLabel',
-  footnotesContainerClassName: 'footnotesContainer',
-  footnotesItemClassName: 'footnotesItem',
-  footnotesRefClassName: 'footnotesRef',
-  footnotesBackrefClassName: 'footnotesBackref',
-  deflistContainerClassName: 'deflistContainer',
-  deflistRowClassName: 'deflistRow',
-  deflistDtClassName: 'deflistDt',
-  deflistDdClassName: 'deflistDd',
-  breakClassName: 'break',
-  strongClassName: 'strong',
-  emClassName: 'em',
-  strikethroughClassName: 'strikethrough',
+const NativewindMarkdownItRN = cssInterop(MarkdownItRN, {
+  rootClassName: {
+    target: 'root',
+  },
+  paragraphClassName: {
+    target: 'paragraph',
+  },
+  h1ClassName: {
+    target: 'h1',
+  },
+  h2ClassName: {
+    target: 'h2',
+  },
+  h3ClassName: {
+    target: 'h3',
+  },
+  h4ClassName: {
+    target: 'h4',
+  },
+  h5ClassName: {
+    target: 'h5',
+  },
+  h6ClassName: {
+    target: 'h6',
+  },
+  linkClassName: {
+    target: 'link',
+  },
+  imageClassName: {
+    target: 'image',
+  },
+  codeBlockContainerClassName: {
+    target: 'codeBlockContainer',
+  },
+  codeBlockTextClassName: {
+    target: 'codeBlockText',
+  },
+  codeInlineClassName: {
+    target: 'codeInline',
+  },
+  blockquoteClassName: {
+    target: 'blockquote',
+  },
+  listUlClassName: {
+    target: 'listUl',
+  },
+  listOlClassName: {
+    target: 'listOl',
+  },
+  listItemClassName: {
+    target: 'listItem',
+  },
+  listBulletClassName: {
+    target: 'listBullet',
+  },
+  listContentClassName: {
+    target: 'listContent',
+  },
+  hrClassName: {
+    target: 'hr',
+  },
+  tableContainerClassName: {
+    target: 'tableContainer',
+  },
+  tableTheadClassName: {
+    target: 'tableThead',
+  },
+  tableTbodyClassName: {
+    target: 'tableTbody',
+  },
+  tableRowClassName: {
+    target: 'tableRow',
+  },
+  tableThClassName: {
+    target: 'tableTh',
+  },
+  tableTdClassName: {
+    target: 'tableTd',
+  },
+  tableThTextClassName: {
+    target: 'tableThText',
+  },
+  tableTdTextClassName: {
+    target: 'tableTdText',
+  },
+  checklistListClassName: {
+    target: 'checklistList',
+  },
+  checklistItemClassName: {
+    target: 'checklistItem',
+  },
+  checklistBoxClassName: {
+    target: 'checklistBox',
+  },
+  checklistCheckedClassName: {
+    target: 'checklistChecked',
+  },
+  checklistUncheckedClassName: {
+    target: 'checklistUnchecked',
+  },
+  checklistLabelClassName: {
+    target: 'checklistLabel',
+  },
+  footnotesContainerClassName: {
+    target: 'footnotesContainer',
+  },
+  footnotesItemClassName: {
+    target: 'footnotesItem',
+  },
+  footnotesRefClassName: {
+    target: 'footnotesRef',
+  },
+  footnotesBackrefClassName: {
+    target: 'footnotesBackref',
+  },
+  deflistContainerClassName: {
+    target: 'deflistContainer',
+  },
+  deflistRowClassName: {
+    target: 'deflistRow',
+  },
+  deflistDtClassName: {
+    target: 'deflistDt',
+  },
+  deflistDdClassName: {
+    target: 'deflistDd',
+  },
+  breakClassName: {
+    target: 'break',
+  },
+  strongClassName: {
+    target: 'strong',
+  },
+  emClassName: {
+    target: 'em',
+  },
+  strikethroughClassName: {
+    target: 'strikethrough',
+  },
 });
 
 import './global.css';

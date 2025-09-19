@@ -92,7 +92,7 @@ export default function Screen() {
         codeBlockText: customStyles.codeBlock.text,
       }}
       onLinkPress={(href) => Linking.openURL(href)}
-      configure={(md) => md.enable(['linkify', 'typographer'])}
+      configure={(md) => md.set({ linkify: true, typographer: true })}
       autoUnfence={true}
     />
   );
@@ -353,18 +353,59 @@ npm start
 
 ### NativeWind Integration
 
-The example app shows how to use `markdown-it-rn` with NativeWind by using `remapProps` to map style props to className props:
+Use `cssInterop` to map Tailwind `className` props to the component's style slots:
 
 ```tsx
-import { remapProps } from 'nativewind';
+import { cssInterop } from 'nativewind';
 import { MarkdownItRN } from 'markdown-it-rn';
 
-const NativewindMarkdownItRN = remapProps(MarkdownItRN, {
-  rootClassName: 'root',
-  paragraphClassName: 'paragraph',
-  h1ClassName: 'h1',
-  h2ClassName: 'h2',
-  // ... map all style props to className equivalents
+const NativewindMarkdownItRN = cssInterop(MarkdownItRN, {
+  rootClassName: { target: 'root' },
+  paragraphClassName: { target: 'paragraph' },
+  breakClassName: { target: 'break' },
+  strongClassName: { target: 'strong' },
+  emClassName: { target: 'em' },
+  strikethroughClassName: { target: 'strikethrough' },
+  h1ClassName: { target: 'h1' },
+  h2ClassName: { target: 'h2' },
+  h3ClassName: { target: 'h3' },
+  h4ClassName: { target: 'h4' },
+  h5ClassName: { target: 'h5' },
+  h6ClassName: { target: 'h6' },
+  linkClassName: { target: 'link' },
+  imageClassName: { target: 'image' },
+  codeBlockContainerClassName: { target: 'codeBlockContainer' },
+  codeBlockTextClassName: { target: 'codeBlockText' },
+  codeInlineClassName: { target: 'codeInline' },
+  blockquoteClassName: { target: 'blockquote' },
+  listUlClassName: { target: 'listUl' },
+  listOlClassName: { target: 'listOl' },
+  listItemClassName: { target: 'listItem' },
+  listBulletClassName: { target: 'listBullet' },
+  listContentClassName: { target: 'listContent' },
+  hrClassName: { target: 'hr' },
+  tableContainerClassName: { target: 'tableContainer' },
+  tableTheadClassName: { target: 'tableThead' },
+  tableTbodyClassName: { target: 'tableTbody' },
+  tableRowClassName: { target: 'tableRow' },
+  tableThClassName: { target: 'tableTh' },
+  tableTdClassName: { target: 'tableTd' },
+  tableThTextClassName: { target: 'tableThText' },
+  tableTdTextClassName: { target: 'tableTdText' },
+  checklistListClassName: { target: 'checklistList' },
+  checklistItemClassName: { target: 'checklistItem' },
+  checklistBoxClassName: { target: 'checklistBox' },
+  checklistCheckedClassName: { target: 'checklistChecked' },
+  checklistUncheckedClassName: { target: 'checklistUnchecked' },
+  checklistLabelClassName: { target: 'checklistLabel' },
+  footnotesContainerClassName: { target: 'footnotesContainer' },
+  footnotesItemClassName: { target: 'footnotesItem' },
+  footnotesRefClassName: { target: 'footnotesRef' },
+  footnotesBackrefClassName: { target: 'footnotesBackref' },
+  deflistContainerClassName: { target: 'deflistContainer' },
+  deflistRowClassName: { target: 'deflistRow' },
+  deflistDtClassName: { target: 'deflistDt' },
+  deflistDdClassName: { target: 'deflistDd' },
 });
 
 // Usage with Tailwind classes
@@ -379,7 +420,7 @@ const NativewindMarkdownItRN = remapProps(MarkdownItRN, {
 />;
 ```
 
-The example demonstrates comprehensive markdown rendering with a clean, modern design using Tailwind CSS classes.
+The example app demonstrates comprehensive markdown rendering with a clean, modern design using Tailwind CSS classes.
 
 ## Contributing
 
