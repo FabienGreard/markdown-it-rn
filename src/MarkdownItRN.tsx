@@ -32,9 +32,5 @@ export const MarkdownItRN = memo(function MarkdownItRN({
 
   const { nodes } = renderBlocks(tokens, 0, onLinkPress, classes ?? {}, 'root');
 
-  return (
-    <View className={`p-8 bg-greed-500 ${className ?? ''} ${classes?.root ?? ''}`.trim()}>
-      {nodes}
-    </View>
-  );
+  return <View className={`${className ?? ''} ${classes?.root ?? ''}`.trim()}>{nodes}</View>;
 });
