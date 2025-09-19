@@ -1,0 +1,82 @@
+{
+  "name": "markdown-it-rn",
+  "version": "0.0.0-alpha",
+  "description": "rn markdown it wrapper using nativewind by default",
+  "main": "./dist/index.js",
+  "scripts": {
+    "build": "tsup",
+    "clean": "rm -rf dist",
+    "clear:install": "rm -rf node_modules example/node_modules && cd example && npm i",
+    "clear:install:fresh": "rm -rf node_modules example/node_modules package-lock.json example/package-lock.json && cd example && npm i",
+    "lint": "eslint \"src/**/*.{ts,tsx}\"",
+    "format": "prettier --write .",
+    "typecheck": "tsc --noEmit",
+    "version:patch": "npm version patch",
+    "version:minor": "npm version minor",
+    "version:major": "npm version major",
+    "version:prerelease": "npm version prerelease",
+    "prepublishOnly": "npm run lint && npm run typecheck && npm run build",
+    "release": "npm run prepublishOnly && npm publish"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yourname/markdown-it-rn.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "GPL-3.0-or-later",
+  "bugs": {
+    "url": "https://github.com/yourname/markdown-it-rn/issues"
+  },
+  "homepage": "https://github.com/yourname/markdown-it-rn#readme",
+  "type": "module",
+  "module": "./dist/index.js",
+  "types": "dist/index.d.ts",
+  "source": "src/index.ts",
+  "files": [
+    "dist"
+  ],
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "sideEffects": false,
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "markdown-it": "^14.1.0",
+    "markdown-it-deflist": "^3.0.0",
+    "markdown-it-emoji": "^3.0.0",
+    "markdown-it-footnote": "^4.0.0"
+  },
+  "devDependencies": {
+    "@types/markdown-it": "^14.1.2",
+    "@types/markdown-it-emoji": "^3.0.1",
+    "@types/markdown-it-footnote": "^3.0.4",
+    "@types/react": "^19.1.0",
+    "@typescript-eslint/eslint-plugin": "^8.44.0",
+    "@typescript-eslint/parser": "^8.44.0",
+    "eslint": "~8.57.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^5.2.0",
+    "eslint-plugin-react-native": "^5.0.0",
+    "prettier": "~3.5.3",
+    "tsup": "^8.5.0",
+    "typescript": "~5.8.3"
+  },
+  "peerDependencies": {
+    "nativewind": "*",
+    "react": "*",
+    "react-native": "*"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "react-native": "./dist/index.js",
+      "import": "./dist/index.js",
+      "require": "./dist/index.js",
+      "default": "./dist/index.js"
+    }
+  }
+}

@@ -1,0 +1,74 @@
+name: Version Tag
+
+on:
+  workflow_dispatch:
+    inputs:
+      version_type:
+        description: 'Version bump type'
+        required: true
+        default: 'patch'
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
+          - prerelease
+          - prepatch
+          - preminor
+          - premajor
+
+jobs:
+  version-tag:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Configure git
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+
+      - name: Bump version and create tag
+        run: |
+          # Use npm version to bump version and create git tag
+          npm version ${{ github.event.inputs.version_type }} -m "chore: bump version to v%s"
+          NEW_VERSION=$(node -p "require('./package.json').version")
+          echo "NEW_VERSION=$NEW_VERSION" >> $GITHUB_ENV
+          echo "Created version tag: v$NEW_VERSION"
+
+      - name: Push changes and tags
+        run: |
+          git push origin main --follow-tags
+          echo "Pushed version v${{ env.NEW_VERSION }} to repository"
+
+      - name: Create GitHub release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: 'v${{ env.NEW_VERSION }}'
+          release_name: 'Release v${{ env.NEW_VERSION }}'
+          body: |
+            ## What's Changed
+
+            * Version bump to v${{ env.NEW_VERSION }}
+
+            **Full Changelog**: https://github.com/${{ github.repository }}/commits/v${{ env.NEW_VERSION }}
+          draft: false
+          prerelease: ${{ contains(env.NEW_VERSION, 'alpha') || contains(env.NEW_VERSION, 'beta') || contains(env.NEW_VERSION, 'rc') }}

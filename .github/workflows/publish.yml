@@ -1,0 +1,100 @@
+name: Publish Package
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      version_type:
+        description: 'Version bump type'
+        required: true
+        default: 'patch'
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
+          - prerelease
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      id-token: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          registry-url: 'https://registry.npmjs.org'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run linting
+        run: npm run lint
+
+      - name: Run type checking
+        run: npm run typecheck
+
+      - name: Build package
+        run: npm run build
+
+      - name: Configure git
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+
+      - name: Bump version and create tag (manual trigger)
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          # Use npm version to bump version and create git tag
+          npm version ${{ github.event.inputs.version_type }} -m "chore: bump version to v%s"
+          NEW_VERSION=$(node -p "require('./package.json').version")
+          echo "NEW_VERSION=$NEW_VERSION" >> $GITHUB_ENV
+          # Push the commit and tag
+          git push origin main --follow-tags
+
+      - name: Get version from tag (release trigger)
+        if: github.event_name == 'release'
+        run: |
+          # Extract version from release tag (remove 'v' prefix if present)
+          VERSION=${GITHUB_REF#refs/tags/}
+          VERSION=${VERSION#v}
+          echo "NEW_VERSION=$VERSION" >> $GITHUB_ENV
+          # Update package.json with the release version
+          npm version $VERSION --no-git-tag-version
+
+      - name: Publish to npm
+        run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Create GitHub release (manual trigger only)
+        if: github.event_name == 'workflow_dispatch'
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: 'v${{ env.NEW_VERSION }}'
+          release_name: 'Release v${{ env.NEW_VERSION }}'
+          draft: false
+          prerelease: ${{ contains(env.NEW_VERSION, 'alpha') || contains(env.NEW_VERSION, 'beta') || contains(env.NEW_VERSION, 'rc') }}
+
+      - name: Update release notes
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          echo "## What's Changed" >> release_notes.md
+          echo "" >> release_notes.md
+          echo "* Version bump to v${{ env.NEW_VERSION }}" >> release_notes.md
+          echo "" >> release_notes.md
+          echo "**Full Changelog**: https://github.com/${{ github.repository }}/commits/v${{ env.NEW_VERSION }}" >> release_notes.md

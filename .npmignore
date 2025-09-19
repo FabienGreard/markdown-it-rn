@@ -1,0 +1,16 @@
+example/
+node_modules/
+*.log
+.DS_Store
+src/**/__tests__/
+.github/
+.vscode/
+*.tsbuildinfo
+eslint.config.js
+.eslintrc.*
+.prettier*
+tsconfig.json
+tsup.config.ts
+instruction.md
+
+
