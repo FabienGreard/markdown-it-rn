@@ -2,9 +2,9 @@
   "name": "markdown-it-rn",
   "version": "0.2.0",
   "description": "rn markdown it wrapper using nativewind by default",
-  "main": "./dist/index.cjs",
+  "main": "./dist/index.js",
   "scripts": {
-    "build": "tsup",
+    "build": "tsdown",
     "clean": "rm -rf dist",
     "clear:install": "rm -rf node_modules example/node_modules package-lock.json example/package-lock.json && npm install && cd example && npm install",
     "lint": "eslint \"src/**/*.{ts,tsx}\"",
@@ -63,7 +63,7 @@
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-react-native": "^5.0.0",
     "prettier": "~3.5.3",
-    "tsup": "^8.5.0",
+    "tsdown": "^0.15.2",
     "typescript": "~5.8.3"
   },
   "peerDependencies": {
@@ -74,7 +74,6 @@
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js",
-      "require": "./dist/index.cjs",
       "default": "./dist/index.js"
     }
   }
