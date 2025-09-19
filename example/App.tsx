@@ -3,9 +3,7 @@ import { StatusBar } from 'expo-status-bar';
 import { ScrollView, Linking } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { MarkdownItRN } from 'markdown-it-rn';
-import deflist from 'markdown-it-deflist';
 import { full as emojiPlugin } from 'markdown-it-emoji';
-import footnote from 'markdown-it-footnote';
 
 import { cssInterop } from 'nativewind';
 
@@ -256,7 +254,7 @@ export default function App() {
           <NativewindMarkdownItRN
             md={SAMPLE}
             onLinkPress={(href) => Linking.openURL(href)}
-            configure={(md) => md.use(emojiPlugin).use(footnote).use(deflist)}
+            configure={(md) => md.use(emojiPlugin)}
             /* component style override usage with nativewind */
             rootClassName="p-3 gap-2"
             paragraphClassName="leading-relaxed mb-3"
