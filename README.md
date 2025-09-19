@@ -283,28 +283,53 @@ const darkTheme = StyleSheet.create({
 
 ## Plugins (opt-in)
 
-This library ships with a minimal `markdown-it` core. No plugins are enabled by default to reduce bundle size.
+This library ships with a minimal `markdown-it` core. No plugins are enabled by default to keep the bundle small.
 
-Install and enable only what you need in your app:
+Install only the plugins you need in your app (you do not need to install `markdown-it` itself):
 
 ```bash
-npm i markdown-it markdown-it-emoji markdown-it-footnote markdown-it-deflist
+npm i markdown-it-emoji markdown-it-footnote markdown-it-deflist
+# or
+pnpm add markdown-it-emoji markdown-it-footnote markdown-it-deflist
+# or
+yarn add markdown-it-emoji markdown-it-footnote markdown-it-deflist
 ```
+
+Use the `configure` prop to add plugins and tweak options. The function receives a `MarkdownIt` instance and must return it:
 
 ```tsx
 import { MarkdownItRN } from 'markdown-it-rn';
-import MarkdownIt from 'markdown-it';
-import emoji from 'markdown-it-emoji';
+import { full as emoji } from 'markdown-it-emoji';
 import footnote from 'markdown-it-footnote';
 import deflist from 'markdown-it-deflist';
 
 <MarkdownItRN
   md={markdown}
-  configure={(md) => {
-    return md.use(emoji).use(footnote).use(deflist);
-  }}
+  configure={(md) =>
+    md.use(emoji).use(footnote).use(deflist).set({ linkify: true, typographer: true })
+  }
 />;
 ```
+
+#### Passing plugin options
+
+```tsx
+import emoji from 'markdown-it-emoji';
+
+<MarkdownItRN md={markdown} configure={(md) => md.use(emoji, { defs: { unicorn: '🦄' } })} />;
+```
+
+#### What is supported out of the box
+
+- Emoji: tokens from `markdown-it-emoji` render as unicode glyphs.
+- Footnotes: tokens from `markdown-it-footnote` render with references and a footnotes block.
+- Definition lists: tokens from `markdown-it-deflist` render as term/definition rows.
+- Task lists: `- [ ]` and `- [x]` are recognized without any plugin. Do not add `markdown-it-task-lists` — it is unnecessary and can conflict with the built-in rendering.
+
+#### Important notes
+
+- Raw HTML is ignored by this renderer. Even if you enable `md.set({ html: true })`, `html_inline`/`html_block` tokens are not rendered.
+- Plugins that rely on injecting raw HTML or custom token types not handled by this renderer will not display. If you need additional token support, open an issue or extend `src/render/inline.tsx` / `src/render/blocks.tsx`.
 
 ### Markdown-it Defaults
 
@@ -324,9 +349,9 @@ import deflist from 'markdown-it-deflist';
 - ✅ Tables
 - ✅ Task lists / checklists
 - ✅ Horizontal rules
-- ✅ Footnotes[^1]
-- ✅ Definition lists
-- ✅ Emoji support
+- ✅ Footnotes[^1] (requires `markdown-it-footnote`)
+- ✅ Definition lists (requires `markdown-it-deflist`)
+- ✅ Emoji support (requires `markdown-it-emoji`)
 
 [^1]: Like this footnote!
 
