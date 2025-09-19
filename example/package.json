@@ -8,7 +8,7 @@
     "ios": "expo start --ios",
     "web": "expo start --web",
     "doctor": "npx expo-doctor@latest",
-    "typecheck": "tsc --noEmit"
+    "tsc": "tsc --noEmit"
   },
   "dependencies": {
     "expo": "~54.0.9",

@@ -6,16 +6,15 @@
   "scripts": {
     "build": "tsup",
     "clean": "rm -rf dist",
-    "clear:install": "rm -rf node_modules example/node_modules && cd example && npm i",
-    "clear:install:fresh": "rm -rf node_modules example/node_modules package-lock.json example/package-lock.json && cd example && npm i",
+    "clear:install": "rm -rf node_modules example/node_modules package-lock.json example/package-lock.json",
     "lint": "eslint \"src/**/*.{ts,tsx}\"",
     "format": "prettier --write .",
-    "typecheck": "tsc --noEmit",
+    "tsc": "tsc --noEmit",
     "version:patch": "npm version patch",
     "version:minor": "npm version minor",
     "version:major": "npm version major",
     "version:prerelease": "npm version prerelease",
-    "prepublishOnly": "npm run lint && npm run typecheck && npm run build",
+    "prepublishOnly": "npm run lint && npm run tsc && npm run build",
     "release": "npm run prepublishOnly && npm publish"
   },
   "repository": {
@@ -56,7 +55,7 @@
     "@types/react": "^19.1.0",
     "@typescript-eslint/eslint-plugin": "^8.44.0",
     "@typescript-eslint/parser": "^8.44.0",
-    "eslint": "~8.57.0",
+    "eslint": "^9.36.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^5.2.0",
@@ -66,8 +65,6 @@
     "typescript": "~5.8.3"
   },
   "peerDependencies": {
-    "tailwindcss": "*",
-    "nativewind": "*",
     "react": "*",
     "react-native": "*"
   },

@@ -2,7 +2,7 @@ import React from 'react';
 
 import { View, Text } from 'react-native';
 
-import type { TableRenderResult, LinkHandler, Token, ClassMap } from '../types';
+import type { TableRenderResult, LinkHandler, Token, StyleMap } from '../types';
 
 import { renderInlineTokens } from './inline';
 
@@ -10,7 +10,7 @@ export function renderTable(
   tokens: Token[],
   startIndex: number,
   onLinkPress?: LinkHandler,
-  classes: ClassMap = {},
+  styles: StyleMap = {},
   keyPrefix = 'tbl',
 ): TableRenderResult {
   let idx = startIndex;
@@ -48,15 +48,16 @@ export function renderTable(
         inlineTok?.children ?? [],
         0,
         onLinkPress,
-        classes,
+        styles,
         `${keyPrefix}-cell-${key}`,
       );
 
       cells.push(
         <View
           key={`${keyPrefix}-c-${key++}`}
-          className={`${classes.table?.td ?? ''} ${isHeader ? (classes.table?.th ?? '') : ''}`}>
-          {<Text className={classes.table?.tdText ?? classes.table?.thText ?? ''}>{nodes}</Text>}
+          style={isHeader ? styles.tableTh : styles.tableTd}
+        >
+          {<Text style={isHeader ? styles.tableThText : styles.tableTdText}>{nodes}</Text>}
         </View>,
       );
     }
@@ -82,7 +83,7 @@ export function renderTable(
     if (t.type === 'tr_open') {
       const cells = READ_ROW();
       (inHead ? headRows : bodyRows).push(
-        <View key={`${keyPrefix}-r-${key++}`} className={classes.table?.row ?? ''}>
+        <View key={`${keyPrefix}-r-${key++}`} style={styles.tableRow}>
           {cells}
         </View>,
       );
@@ -91,14 +92,10 @@ export function renderTable(
 
   const node = (
     <View
-      className={classes.table?.container ?? ''}
-      style={
-        !classes.table?.container
-          ? { borderWidth: 1, borderRadius: 12, overflow: 'hidden' }
-          : undefined
-      }>
-      {headRows.length > 0 && <View className={classes.table?.thead ?? ''}>{headRows}</View>}
-      <View className={classes.table?.tbody ?? ''}>{bodyRows}</View>
+      style={styles.tableContainer || { borderWidth: 1, borderRadius: 12, overflow: 'hidden' }}
+    >
+      {headRows.length > 0 && <View style={styles.tableThead}>{headRows}</View>}
+      <View style={styles.tableTbody}>{bodyRows}</View>
     </View>
   );
 

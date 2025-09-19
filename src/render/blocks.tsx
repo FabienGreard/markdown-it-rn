@@ -2,7 +2,7 @@ import React from 'react';
 
 import { View, Text, ScrollView } from 'react-native';
 
-import type { RenderResult, LinkHandler, Token, ClassMap } from '../types';
+import type { RenderResult, LinkHandler, Token, StyleMap } from '../types';
 
 import { renderInlineTokens } from './inline';
 import { renderTable } from './table';
@@ -24,7 +24,7 @@ export function renderBlocks(
   tokens: Token[],
   startIndex = 0,
   onLinkPress?: LinkHandler,
-  classes: ClassMap = {},
+  styles: StyleMap = {},
   keyPrefix = 'blk',
 ): RenderResult {
   const out: React.ReactNode[] = [];
@@ -35,7 +35,7 @@ export function renderBlocks(
     const children: React.ReactNode[] = [];
     let group = 0;
     while (idx < tokens.length && tokens[idx].type !== closeType) {
-      const res = renderBlocks(tokens, idx, onLinkPress, classes, innerKey);
+      const res = renderBlocks(tokens, idx, onLinkPress, styles, innerKey);
       children.push(<React.Fragment key={`${innerKey}-${group++}`}>{res.nodes}</React.Fragment>);
       idx = res.index;
     }
@@ -58,7 +58,7 @@ export function renderBlocks(
               inlineTok.children || [],
               0,
               onLinkPress,
-              classes,
+              styles,
               `${keyPrefix}-p-${key}-${pChunk++}`,
             );
             pChildren.push(...nodes);
@@ -70,7 +70,7 @@ export function renderBlocks(
             pChildren.push(
               <Text
                 key={`${keyPrefix}-fn-backref-${key}-${fid}`}
-                className={classes.footnotes?.backref ?? ''}
+                style={styles.footnotesBackref}
               >
                 {' ↩'}
               </Text>,
@@ -85,7 +85,7 @@ export function renderBlocks(
         }
 
         out.push(
-          <Text key={`${keyPrefix}-p-${key++}`} className={classes.paragraph ?? ''}>
+          <Text key={`${keyPrefix}-p-${key++}`} style={styles.paragraph}>
             {pChildren}
           </Text>,
         );
@@ -99,14 +99,14 @@ export function renderBlocks(
           inlineTok.children || [],
           0,
           onLinkPress,
-          classes,
+          styles,
           `${keyPrefix}-h-${key}`,
         );
         idx++; // heading_close
-        const hClass = classes.heading?.[tag] ?? '';
+        const hStyle = styles[tag];
         out.push(
           <View key={`${keyPrefix}-h-${key++}`}>
-            <Text className={hClass}>{nodes}</Text>
+            <Text style={hStyle}>{nodes}</Text>
           </View>,
         );
         break;
@@ -117,9 +117,9 @@ export function renderBlocks(
           <ScrollView
             key={`${keyPrefix}-code-${key++}`}
             horizontal
-            className={classes.codeBlock?.container ?? ''}
+            style={styles.codeBlockContainer}
           >
-            <Text className={classes.codeBlock?.text ?? ''}>{t.content}</Text>
+            <Text style={styles.codeBlockText}>{t.content}</Text>
           </ScrollView>,
         );
         break;
@@ -128,7 +128,7 @@ export function renderBlocks(
       case 'blockquote_open': {
         const inner = takeUntil('blockquote_close', `${keyPrefix}-q-${key}`);
         out.push(
-          <View key={`${keyPrefix}-q-${key++}`} className={classes.blockquote ?? ''}>
+          <View key={`${keyPrefix}-q-${key++}`} style={styles.blockquote}>
             {inner}
           </View>,
         );
@@ -155,7 +155,7 @@ export function renderBlocks(
                   inlineTok.children || [],
                   0,
                   onLinkPress,
-                  classes,
+                  styles,
                   `${keyPrefix}-tl-${key}`,
                 );
                 idx++; // paragraph_close
@@ -165,7 +165,7 @@ export function renderBlocks(
                     tokens,
                     idx,
                     onLinkPress,
-                    classes,
+                    styles,
                     `${keyPrefix}-li-${key}`,
                   );
                   items.push(
@@ -179,30 +179,30 @@ export function renderBlocks(
                 items.push(
                   <View
                     key={`${keyPrefix}-ul-li-${items.length}`}
-                    className={classes.checklist?.item ?? classes.list?.item ?? ''}
+                    style={styles.checklistItem}
                   >
                     <Text
-                      className={`${classes.checklist?.box ?? ''} ${checked ? (classes.checklist?.checked ?? '') : (classes.checklist?.unchecked ?? '')}`}
+                      style={[styles.checklistBox, checked ? styles.checklistChecked : styles.checklistUnchecked]}
                     >
                       {checked ? '✓' : '✗'}
                     </Text>
-                    <Text className={classes.checklist?.label ?? ''}>{nodes}</Text>
+                    <Text style={styles.checklistLabel}>{nodes}</Text>
                   </View>,
                 );
                 checklistHandled = true;
               }
             }
             if (!checklistHandled) {
-              const res = renderBlocks(tokens, idx, onLinkPress, classes, `${keyPrefix}-ul-${key}`);
+              const res = renderBlocks(tokens, idx, onLinkPress, styles, `${keyPrefix}-ul-${key}`);
               idx = res.index; // at list_item_close
               idx++; // consume list_item_close
               items.push(
                 <View
                   key={`${keyPrefix}-ul-li-${items.length}`}
-                  className={classes.list?.item ?? ''}
+                  style={styles.listItem}
                 >
-                  <Text className={classes.list?.bullet ?? ''}>•</Text>
-                  <View className={classes.list?.content ?? ''}>{res.nodes}</View>
+                  <Text style={styles.listBullet}>•</Text>
+                  <View style={styles.listContent}>{res.nodes}</View>
                 </View>,
               );
             }
@@ -211,11 +211,9 @@ export function renderBlocks(
           }
         }
         idx++; // bullet_list_close
-        const listClass = hasChecklistItems
-          ? (classes.checklist?.list ?? classes.list?.ul ?? '')
-          : (classes.list?.ul ?? '');
+        const listStyle = hasChecklistItems ? styles.checklistList : styles.listUl;
         out.push(
-          <View key={`${keyPrefix}-ul-${key++}`} className={listClass}>
+          <View key={`${keyPrefix}-ul-${key++}`} style={listStyle}>
             {items}
           </View>,
         );
@@ -229,13 +227,13 @@ export function renderBlocks(
         while (idx < tokens.length && tokens[idx].type !== 'ordered_list_close') {
           if (tokens[idx].type === 'list_item_open') {
             idx++;
-            const res = renderBlocks(tokens, idx, onLinkPress, classes, `${keyPrefix}-ol-${key}`);
+            const res = renderBlocks(tokens, idx, onLinkPress, styles, `${keyPrefix}-ol-${key}`);
             idx = res.index; // at list_item_close
             idx++; // consume list_item_close
             items.push(
-              <View key={`${keyPrefix}-ol-li-${items.length}`} className={classes.list?.item ?? ''}>
-                <Text className={classes.list?.bullet ?? ''}>{`${start + n}.`}</Text>
-                <View className={classes.list?.content ?? ''}>{res.nodes}</View>
+              <View key={`${keyPrefix}-ol-li-${items.length}`} style={styles.listItem}>
+                <Text style={styles.listBullet}>{`${start + n}.`}</Text>
+                <View style={styles.listContent}>{res.nodes}</View>
               </View>,
             );
             n++;
@@ -245,7 +243,7 @@ export function renderBlocks(
         }
         idx++; // ordered_list_close
         out.push(
-          <View key={`${keyPrefix}-ol-${key++}`} className={classes.list?.ol ?? ''}>
+          <View key={`${keyPrefix}-ol-${key++}`} style={styles.listOl}>
             {items}
           </View>,
         );
@@ -253,7 +251,7 @@ export function renderBlocks(
       }
 
       case 'hr': {
-        out.push(<View key={`${keyPrefix}-hr-${key++}`} className={classes.hr ?? ''} />);
+        out.push(<View key={`${keyPrefix}-hr-${key++}`} style={styles.hr} />);
         break;
       }
 
@@ -262,7 +260,7 @@ export function renderBlocks(
           tokens,
           idx,
           onLinkPress,
-          classes,
+          styles,
           `${keyPrefix}-tbl-${key}`,
         );
         idx = index; // table_close consumed by renderTable
@@ -283,7 +281,7 @@ export function renderBlocks(
               dtInline.children || [],
               0,
               onLinkPress,
-              classes,
+              styles,
               `${keyPrefix}-dt-${key}`,
             ).nodes;
             idx++; // dt_close
@@ -291,17 +289,17 @@ export function renderBlocks(
             // ---- Definition ----
             if (tokens[idx].type === 'dd_open') {
               idx++; // into dd
-              const res = renderBlocks(tokens, idx, onLinkPress, classes, `${keyPrefix}-dd-${key}`);
+              const res = renderBlocks(tokens, idx, onLinkPress, styles, `${keyPrefix}-dd-${key}`);
               idx = res.index; // at dd_close
               idx++; // consume dd_close
 
               rows.push(
                 <View
                   key={`${keyPrefix}-dl-row-${rows.length}`}
-                  className={classes.deflist?.row ?? ''}
+                  style={styles.deflistRow}
                 >
-                  <Text className={classes.deflist?.dt ?? ''}>{dtNodes}</Text>
-                  <View className={classes.deflist?.dd ?? ''}>{res.nodes}</View>
+                  <Text style={styles.deflistDt}>{dtNodes}</Text>
+                  <View style={styles.deflistDd}>{res.nodes}</View>
                 </View>,
               );
             }
@@ -312,7 +310,7 @@ export function renderBlocks(
 
         idx++; // consume dl_close
         out.push(
-          <View key={`${keyPrefix}-dl-${key++}`} className={classes.deflist?.container ?? ''}>
+          <View key={`${keyPrefix}-dl-${key++}`} style={styles.deflistContainer}>
             {rows}
           </View>,
         );
@@ -328,13 +326,13 @@ export function renderBlocks(
             const id = tokens[idx].meta?.id ?? items.length;
             idx++;
 
-            const res = renderBlocks(tokens, idx, onLinkPress, classes, `${keyPrefix}-fn-${id}`);
+            const res = renderBlocks(tokens, idx, onLinkPress, styles, `${keyPrefix}-fn-${id}`);
             idx = res.index; // at footnote_close
             idx++; // consume footnote_close
             items.push(
-              <View key={`${keyPrefix}-fn-item-${id}`} className={classes.footnotes?.item ?? ''}>
-                <Text className={classes.footnotes?.ref ?? ''}>[{Number(id) + 1}]</Text>
-                <View className={classes.footnotes?.content ?? ''}>{res.nodes}</View>
+              <View key={`${keyPrefix}-fn-item-${id}`} style={styles.footnotesItem}>
+                <Text style={styles.footnotesRef}>[{Number(id) + 1}]</Text>
+                <View>{res.nodes}</View>
               </View>,
             );
           } else {
@@ -345,9 +343,9 @@ export function renderBlocks(
         out.push(
           <View
             key={`${keyPrefix}-fnblock-${key++}`}
-            className={classes.footnotes?.container ?? ''}
+            style={styles.footnotesContainer}
           >
-            <View className={classes.footnotes?.list ?? ''}>{items}</View>
+            <View>{items}</View>
           </View>,
         );
         break;
@@ -368,11 +366,11 @@ export function renderBlocks(
           t.children || [],
           0,
           onLinkPress,
-          classes,
+          styles,
           `${keyPrefix}-ip-${key}`,
         );
         out.push(
-          <Text key={`${keyPrefix}-ip-${key++}`} className={classes.paragraph ?? ''}>
+          <Text key={`${keyPrefix}-ip-${key++}`} style={styles.paragraph}>
             {nodes}
           </Text>,
         );

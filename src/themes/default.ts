@@ -1,81 +1,286 @@
-import type { ClassMap } from '../types';
+import { StyleSheet } from 'react-native';
+import type { StyleMap } from '../types';
 
-export const defaultClasses = {
-  root: 'p-3 gap-2',
-
-  paragraph: 'text-neutral-700 dark:text-neutral-300 leading-relaxed mb-3',
-
-  break: '',
-  strong: 'font-bold text-neutral-700 dark:text-neutral-300',
-  em: 'italic text-neutral-700 dark:text-neutral-300',
-  strikethrough: 'line-through text-neutral-700 dark:text-dark-neutral-300',
-
-  heading: {
-    h1: 'mt-4 mb-2 text-4xl font-extrabold tracking-tight text-neutral-700 dark:text-neutral-300',
-    h2: 'mt-3 mb-2 text-3xl font-bold tracking-tight text-neutral-700 dark:text-neutral-300',
-    h3: 'mt-3 mb-2 text-2xl font-semibold text-neutral-700 dark:text-neutral-300',
-    h4: 'mt-2 mb-1 text-xl font-semibold text-neutral-700 dark:text-neutral-300',
-    h5: 'mt-2 mb-1 text-lg font-medium text-neutral-700 dark:text-neutral-300',
-    h6: 'mt-1 mb-1 text-sm font-medium uppercase tracking-wide text-neutral-600 dark:text-dark-neutral-400',
+export const defaultStyles = StyleSheet.create({
+  root: {
+    padding: 12,
+    gap: 8,
   },
 
-  link: 'underline text-neutral-500 dark:text-neutral-400',
-
-  image: 'w-full h-48 my-3 rounded-md',
-
-  codeBlock: {
-    container:
-      'my-3 bg-neutral-100 dark:bg-neutral-800 rounded-md border border-neutral-200 dark:border-neutral-700',
-    text: 'font-mono text-sm p-3 text-neutral-700 dark:text-neutral-300',
+  paragraph: {
+    color: '#404040',
+    lineHeight: 24,
+    marginBottom: 12,
   },
 
-  codeInline:
-    'font-mono text-sm bg-neutral-100 dark:bg-neutral-800 px-1.5 py-0.5 rounded text-neutral-700 dark:text-neutral-300',
+  break: {},
 
-  blockquote:
-    'border-l-4 pl-3 my-3 border-neutral-300 dark:border-neutral-600 text-neutral-700 dark:text-neutral-300 italic',
-
-  list: {
-    ul: 'my-2 ml-5',
-    ol: 'my-2 ml-5',
-    item: 'flex-row items-start mb-1',
-    bullet: 'w-5 text-left text-neutral-700 dark:text-neutral-300',
-    content: 'flex-1',
+  strong: {
+    fontWeight: 'bold' as const,
+    color: '#404040',
   },
 
-  hr: 'my-4 h-px bg-neutral-300 dark:bg-neutral-600',
-
-  table: {
-    container: 'border border-neutral-300 dark:border-neutral-600 my-3 rounded-md overflow-hidden',
-    thead: 'bg-neutral-50 dark:bg-neutral-900',
-    tbody: '',
-    row: 'flex-row',
-    th: 'p-3 border border-neutral-300 dark:border-neutral-600 font-semibold text-left',
-    td: 'p-3 border border-neutral-200 dark:border-neutral-700 text-left flex-1',
-    thText: 'text-neutral-700 dark:text-neutral-300',
-    tdText: 'text-neutral-700 dark:text-neutral-300',
+  em: {
+    fontStyle: 'italic',
+    color: '#404040',
   },
 
-  checklist: {
-    list: 'my-2',
-    item: 'flex-row items-center gap-2 mb-2',
-    box: 'w-5 h-5 text-center border border-neutral-400 dark:border-neutral-600 rounded-sm',
-    checked: 'bg-neutral-700 dark:bg-neutral-300 text-white dark:text-black',
-    unchecked: 'text-neutral-400 dark:text-neutral-600',
-    label: 'text-neutral-700 dark:text-neutral-300',
+  strikethrough: {
+    textDecorationLine: 'line-through',
+    color: '#404040',
   },
 
-  footnotes: {
-    container: 'mt-6 pt-4 border-t border-neutral-300 dark:border-neutral-600',
-    item: 'flex-row gap-2 mb-1',
-    ref: 'text-neutral-500 dark:text-neutral-400 font-mono text-xs',
-    backref: 'text-neutral-500 dark:text-neutral-400 font-mono text-xs',
+  // Headings
+  h1: {
+    marginTop: 16,
+    marginBottom: 8,
+    fontSize: 36,
+    fontWeight: '800' as const,
+    letterSpacing: -0.025,
+    color: '#404040',
   },
 
-  deflist: {
-    container: 'my-3',
-    row: 'mb-2',
-    dt: 'font-semibold text-neutral-700 dark:text-neutral-300',
-    dd: 'pl-4 text-neutral-700 dark:text-neutral-300',
+  h2: {
+    marginTop: 12,
+    marginBottom: 8,
+    fontSize: 30,
+    fontWeight: 'bold' as const,
+    letterSpacing: -0.025,
+    color: '#404040',
   },
-} satisfies ClassMap;
+
+  h3: {
+    marginTop: 12,
+    marginBottom: 8,
+    fontSize: 24,
+    fontWeight: '600' as const,
+    color: '#404040',
+  },
+
+  h4: {
+    marginTop: 8,
+    marginBottom: 4,
+    fontSize: 20,
+    fontWeight: '600' as const,
+    color: '#404040',
+  },
+
+  h5: {
+    marginTop: 8,
+    marginBottom: 4,
+    fontSize: 18,
+    fontWeight: '500' as const,
+    color: '#404040',
+  },
+
+  h6: {
+    marginTop: 4,
+    marginBottom: 4,
+    fontSize: 14,
+    fontWeight: '500' as const,
+    textTransform: 'uppercase',
+    letterSpacing: 0.05,
+    color: '#525252',
+  },
+
+  link: {
+    textDecorationLine: 'underline',
+    color: '#737373',
+  },
+
+  image: {
+    width: '100%',
+    height: 192,
+    marginVertical: 12,
+    borderRadius: 6,
+  },
+
+  // Code blocks
+  codeBlockContainer: {
+    marginVertical: 12,
+    backgroundColor: '#f5f5f5',
+    borderRadius: 6,
+    borderWidth: 1,
+    borderColor: '#e5e5e5',
+  },
+
+  codeBlockText: {
+    fontFamily: 'monospace',
+    fontSize: 14,
+    padding: 12,
+    color: '#404040',
+  },
+
+  codeInline: {
+    fontFamily: 'monospace',
+    fontSize: 14,
+    backgroundColor: '#f5f5f5',
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: 3,
+    color: '#404040',
+  },
+
+  blockquote: {
+    borderLeftWidth: 4,
+    paddingLeft: 12,
+    marginVertical: 12,
+    borderLeftColor: '#d4d4d4',
+    color: '#404040',
+    fontStyle: 'italic',
+  },
+
+  // Lists
+  listUl: {
+    marginVertical: 8,
+    marginLeft: 20,
+  },
+
+  listOl: {
+    marginVertical: 8,
+    marginLeft: 20,
+  },
+
+  listItem: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    marginBottom: 4,
+  },
+
+  listBullet: {
+    width: 20,
+    textAlign: 'left' as const,
+    color: '#404040',
+  },
+
+  listContent: {
+    flex: 1,
+  },
+
+  hr: {
+    marginVertical: 16,
+    height: 1,
+    backgroundColor: '#d4d4d4',
+  },
+
+  // Table
+  tableContainer: {
+    borderWidth: 1,
+    borderColor: '#d4d4d4',
+    marginVertical: 12,
+    borderRadius: 6,
+    overflow: 'hidden',
+  },
+
+  tableThead: {
+    backgroundColor: '#fafafa',
+  },
+
+  tableTbody: {},
+
+  tableRow: {
+    flexDirection: 'row',
+  },
+
+  tableTh: {
+    padding: 12,
+    borderWidth: 1,
+    borderColor: '#d4d4d4',
+    fontWeight: '600' as const,
+    flex: 1,
+  },
+
+  tableTd: {
+    padding: 12,
+    borderWidth: 1,
+    borderColor: '#e5e5e5',
+    flex: 1,
+  },
+
+  tableThText: {
+    color: '#404040',
+  },
+
+  tableTdText: {
+    color: '#404040',
+  },
+
+  // Checklist
+  checklistList: {
+    marginVertical: 8,
+  },
+
+  checklistItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    marginBottom: 8,
+  },
+
+  checklistBox: {
+    width: 20,
+    height: 20,
+    textAlign: 'center' as const,
+    borderWidth: 1,
+    borderColor: '#a3a3a3',
+    borderRadius: 2,
+  },
+
+  checklistChecked: {
+    backgroundColor: '#404040',
+    color: '#ffffff',
+  },
+
+  checklistUnchecked: {
+    color: '#a3a3a3',
+  },
+
+  checklistLabel: {
+    color: '#404040',
+  },
+
+  // Footnotes
+  footnotesContainer: {
+    marginTop: 24,
+    paddingTop: 16,
+    borderTopWidth: 1,
+    borderTopColor: '#d4d4d4',
+  },
+
+  footnotesItem: {
+    flexDirection: 'row',
+    gap: 8,
+    marginBottom: 4,
+  },
+
+  footnotesRef: {
+    color: '#737373',
+    fontFamily: 'monospace',
+    fontSize: 12,
+  },
+
+  footnotesBackref: {
+    color: '#737373',
+    fontFamily: 'monospace',
+    fontSize: 12,
+  },
+
+  // Definition list
+  deflistContainer: {
+    marginVertical: 12,
+  },
+
+  deflistRow: {
+    marginBottom: 8,
+  },
+
+  deflistDt: {
+    fontWeight: '600' as const,
+    color: '#404040',
+  },
+
+  deflistDd: {
+    paddingLeft: 16,
+    color: '#404040',
+  },
+}) satisfies StyleMap;

@@ -1,13 +1,13 @@
 # markdown-it-rn
 
-React Native renderer for markdown-it, with NativeWind-compatible `className` styling out of the box.
+React Native renderer for markdown-it with customizable styling using React Native's StyleSheet.
 
 ## Install
 
 ```bash
 npm i markdown-it-rn
 # peer deps expected in your app:
-npm i react react-native nativewind
+npm i react react-native
 ```
 
 ## Usage
@@ -22,7 +22,6 @@ export default function Screen() {
   return (
     <MarkdownItRN
       md={`# Hello World\n\n- [x] Task done\n- [ ] Task todo\n\n> A quote\n\n\`inline code\``}
-      className="p-4"
       onLinkPress={(href) => console.log('open', href)}
     />
   );
@@ -33,28 +32,65 @@ export default function Screen() {
 
 ```tsx
 import React from 'react';
-import { Linking } from 'react-native';
+import { Linking, StyleSheet } from 'react-native';
 import { MarkdownItRN } from 'markdown-it-rn';
 
-const customClasses = {
+const customStyles = StyleSheet.create({
+  root: {
+    padding: 24,
+    backgroundColor: 'white',
+  },
   heading: {
-    h1: 'text-3xl font-bold text-blue-600 mb-4',
-    h2: 'text-2xl font-semibold text-gray-800 mb-3',
+    h1: {
+      fontSize: 24,
+      fontWeight: 'bold',
+      color: '#2563eb',
+      marginBottom: 16,
+    },
+    h2: {
+      fontSize: 20,
+      fontWeight: '600',
+      color: '#1f2937',
+      marginBottom: 12,
+    },
   },
-  paragraph: 'text-gray-700 mb-2 leading-6',
-  link: 'text-blue-500 underline',
+  paragraph: {
+    color: '#374151',
+    marginBottom: 8,
+    lineHeight: 24,
+  },
+  link: {
+    color: '#3b82f6',
+    textDecorationLine: 'underline',
+  },
   codeBlock: {
-    container: 'bg-gray-100 rounded-lg p-4 my-3',
-    text: 'font-mono text-sm text-gray-800',
+    container: {
+      backgroundColor: '#f3f4f6',
+      borderRadius: 8,
+      padding: 16,
+      marginVertical: 12,
+    },
+    text: {
+      fontFamily: 'monospace',
+      fontSize: 14,
+      color: '#1f2937',
+    },
   },
-};
+});
 
 export default function Screen() {
   return (
     <MarkdownItRN
       md={`# Custom Styled Markdown\n\nThis is a paragraph with [a link](https://example.com).\n\n\`\`\`javascript\nconsole.log('Hello World');\n\`\`\``}
-      className="p-6 bg-white"
-      classes={customClasses}
+      styles={{
+        root: customStyles.root,
+        h1: customStyles.heading.h1,
+        h2: customStyles.heading.h2,
+        paragraph: customStyles.paragraph,
+        link: customStyles.link,
+        codeBlockContainer: customStyles.codeBlock.container,
+        codeBlockText: customStyles.codeBlock.text,
+      }}
       onLinkPress={(href) => Linking.openURL(href)}
       configure={(md) => md.enable(['linkify', 'typographer'])}
       autoUnfence={true}
@@ -63,132 +99,186 @@ export default function Screen() {
 }
 ```
 
-### Using Default Classes
+### Using Default Styles
 
 ```tsx
 import React from 'react';
-import { MarkdownItRN, defaultClasses } from 'markdown-it-rn';
+import { MarkdownItRN } from 'markdown-it-rn';
 
 export default function Screen() {
-  return (
-    <MarkdownItRN
-      md={`# Using Default Styles\n\nThis uses the built-in default styling.`}
-      classes={defaultClasses}
-    />
-  );
+  return <MarkdownItRN md={`# Using Default Styles\n\nThis uses the built-in default styling.`} />;
 }
 ```
+
+### Handling Pasted Markdown (autoUnfence)
+
+When `autoUnfence` is true (default), triple‑backtick fenced blocks labeled as `md`/`markdown` are unwrapped so the inner markdown renders directly. Disable this if you want to keep the fence.
+
+````tsx
+const pasted = '```md\n# Title\n\n- item\n```';
+<MarkdownItRN md={pasted} autoUnfence />;
+````
 
 ## API Reference
 
 ### Props
 
-| Prop          | Type                             | Required | Default          | Description                                   |
-| ------------- | -------------------------------- | -------- | ---------------- | --------------------------------------------- |
-| `md`          | `string`                         | ✅       | -                | Markdown string to render                     |
-| `className`   | `string`                         | ❌       | `''`             | Root container classes (NativeWind)           |
-| `classes`     | `ClassMap`                       | ❌       | `defaultClasses` | Fine-grained style overrides for each element |
-| `onLinkPress` | `(href: string) => void`         | ❌       | -                | Handler for link taps                         |
-| `configure`   | `(md: MarkdownIt) => MarkdownIt` | ❌       | -                | Customize markdown-it instance                |
-| `autoUnfence` | `boolean`                        | ❌       | `true`           | Unwrap pasted ```md fenced blocks             |
+| Prop          | Type                             | Required | Default         | Description                                         |
+| ------------- | -------------------------------- | -------- | --------------- | --------------------------------------------------- |
+| `md`          | `string`                         | ✅       | -               | Markdown string to render                           |
+| `styles`      | `StyleMap`                       | ❌       | `defaultStyles` | Fine-grained style overrides for each element       |
+| `onLinkPress` | `(href: string) => void`         | ❌       | -               | Handler for link taps. Without it, links won't open |
+| `configure`   | `(md: MarkdownIt) => MarkdownIt` | ❌       | -               | Customize markdown-it instance                      |
+| `autoUnfence` | `boolean`                        | ❌       | `true`          | Unwrap pasted ```md fenced blocks                   |
 
 ## Styling
 
 ### Container Styling
 
-Use the `className` prop to style the root container:
+Use `styles.root` to style the root container (the `style` prop has been removed):
 
 ```tsx
-<MarkdownItRN md="# Hello" className="p-4 bg-white rounded-lg shadow-md" />
+<MarkdownItRN
+  md="# Hello"
+  styles={{
+    root: {
+      padding: 16,
+      backgroundColor: 'white',
+      borderRadius: 8,
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.1,
+      shadowRadius: 4,
+      elevation: 3,
+    },
+  }}
+/>
 ```
 
 ### Element-Specific Styling
 
-Use the `classes` prop to override styles for specific markdown elements. All classes accept NativeWind/Tailwind CSS class strings.
+Use the `styles` prop to override styles for specific markdown elements. All styles accept React Native StyleSheet properties.
+
+You can also pass any individual style keys directly as shorthand props (e.g., `h1`, `paragraph`, `tableContainer`). They are merged with `defaultStyles` and with the `styles` object. Merge order is: `defaultStyles` < `styles` prop < individual shorthand props.
 
 ## Overrideable Style Attributes
 
-The following table shows all the style attributes that can be overridden through the `classes` prop:
+The following table shows all the style attributes that can be overridden through the `styles` prop:
 
-| Element              | Attribute Path        | Type     | Description                | Default Example                                                                                                       |
-| -------------------- | --------------------- | -------- | -------------------------- | --------------------------------------------------------------------------------------------------------------------- |
-| **Root Container**   | `root`                | `string` | Root container styling     | `'p-3 gap-2'`                                                                                                         |
-| **Text Elements**    |                       |          |                            |                                                                                                                       |
-|                      | `paragraph`           | `string` | Paragraph text styling     | `'text-neutral-700 dark:text-neutral-300 leading-relaxed mb-3'`                                                       |
-|                      | `break`               | `string` | Line break styling         | `''`                                                                                                                  |
-|                      | `strong`              | `string` | Bold text styling          | `'font-bold text-neutral-700 dark:text-neutral-300'`                                                                  |
-|                      | `em`                  | `string` | Italic text styling        | `'italic text-neutral-700 dark:text-neutral-300'`                                                                     |
-|                      | `strikethrough`       | `string` | Strikethrough text styling | `'line-through text-neutral-700 dark:text-dark-neutral-300'`                                                          |
-| **Headings**         |                       |          |                            |                                                                                                                       |
-|                      | `heading.h1`          | `string` | H1 heading styling         | `'mt-4 mb-2 text-4xl font-extrabold tracking-tight text-neutral-700 dark:text-neutral-300'`                           |
-|                      | `heading.h2`          | `string` | H2 heading styling         | `'mt-3 mb-2 text-3xl font-bold tracking-tight text-neutral-700 dark:text-neutral-300'`                                |
-|                      | `heading.h3`          | `string` | H3 heading styling         | `'mt-3 mb-2 text-2xl font-semibold text-neutral-700 dark:text-neutral-300'`                                           |
-|                      | `heading.h4`          | `string` | H4 heading styling         | `'mt-2 mb-1 text-xl font-semibold text-neutral-700 dark:text-neutral-300'`                                            |
-|                      | `heading.h5`          | `string` | H5 heading styling         | `'mt-2 mb-1 text-lg font-medium text-neutral-700 dark:text-neutral-300'`                                              |
-|                      | `heading.h6`          | `string` | H6 heading styling         | `'mt-1 mb-1 text-sm font-medium uppercase tracking-wide text-neutral-600 dark:text-dark-neutral-400'`                 |
-| **Links & Media**    |                       |          |                            |                                                                                                                       |
-|                      | `link`                | `string` | Link styling               | `'underline text-neutral-500 dark:text-neutral-400'`                                                                  |
-|                      | `image`               | `string` | Image styling              | `'w-full h-48 my-3 rounded-md'`                                                                                       |
-| **Code**             |                       |          |                            |                                                                                                                       |
-|                      | `codeBlock.container` | `string` | Code block container       | `'my-3 bg-neutral-100 dark:bg-neutral-800 rounded-md border border-neutral-200 dark:border-neutral-700'`              |
-|                      | `codeBlock.text`      | `string` | Code block text            | `'font-mono text-sm p-3 text-neutral-700 dark:text-neutral-300'`                                                      |
-|                      | `codeInline`          | `string` | Inline code styling        | `'font-mono text-sm bg-neutral-100 dark:bg-neutral-800 px-1.5 py-0.5 rounded text-neutral-700 dark:text-neutral-300'` |
-| **Block Elements**   |                       |          |                            |                                                                                                                       |
-|                      | `blockquote`          | `string` | Blockquote styling         | `'border-l-4 pl-3 my-3 border-neutral-300 dark:border-neutral-600 text-neutral-700 dark:text-neutral-300 italic'`     |
-|                      | `hr`                  | `string` | Horizontal rule styling    | `'my-4 h-px bg-neutral-300 dark:bg-neutral-600'`                                                                      |
-| **Lists**            |                       |          |                            |                                                                                                                       |
-|                      | `list.ul`             | `string` | Unordered list container   | `'my-2 ml-5'`                                                                                                         |
-|                      | `list.ol`             | `string` | Ordered list container     | `'my-2 ml-5'`                                                                                                         |
-|                      | `list.item`           | `string` | List item styling          | `'flex-row items-start mb-1'`                                                                                         |
-|                      | `list.bullet`         | `string` | List bullet/number styling | `'w-5 text-left text-neutral-700 dark:text-neutral-300'`                                                              |
-|                      | `list.content`        | `string` | List item content          | `'flex-1'`                                                                                                            |
-| **Tables**           |                       |          |                            |                                                                                                                       |
-|                      | `table.container`     | `string` | Table container            | `'border border-neutral-300 dark:border-neutral-600 my-3 rounded-md overflow-hidden'`                                 |
-|                      | `table.thead`         | `string` | Table header section       | `'bg-neutral-50 dark:bg-neutral-900'`                                                                                 |
-|                      | `table.tbody`         | `string` | Table body section         | `''`                                                                                                                  |
-|                      | `table.row`           | `string` | Table row styling          | `'flex-row'`                                                                                                          |
-|                      | `table.th`            | `string` | Table header cell          | `'p-3 border border-neutral-300 dark:border-neutral-600 font-semibold text-left'`                                     |
-|                      | `table.td`            | `string` | Table data cell            | `'p-3 border border-neutral-200 dark:border-neutral-700 text-left flex-1'`                                            |
-|                      | `table.thText`        | `string` | Table header text          | `'text-neutral-700 dark:text-neutral-300'`                                                                            |
-|                      | `table.tdText`        | `string` | Table data text            | `'text-neutral-700 dark:text-neutral-300'`                                                                            |
-| **Checklists**       |                       |          |                            |                                                                                                                       |
-|                      | `checklist.list`      | `string` | Checklist container        | `'my-2'`                                                                                                              |
-|                      | `checklist.item`      | `string` | Checklist item             | `'flex-row items-center gap-2 mb-2'`                                                                                  |
-|                      | `checklist.box`       | `string` | Checkbox styling           | `'w-5 h-5 text-center border border-neutral-400 dark:border-neutral-600 rounded-sm'`                                  |
-|                      | `checklist.checked`   | `string` | Checked checkbox           | `'bg-neutral-700 dark:bg-neutral-300 text-white dark:text-black'`                                                     |
-|                      | `checklist.unchecked` | `string` | Unchecked checkbox         | `'text-neutral-400 dark:text-neutral-600'`                                                                            |
-|                      | `checklist.label`     | `string` | Checklist label            | `'text-neutral-700 dark:text-neutral-300'`                                                                            |
-| **Footnotes**        |                       |          |                            |                                                                                                                       |
-|                      | `footnotes.container` | `string` | Footnotes container        | `'mt-6 pt-4 border-t border-neutral-300 dark:border-neutral-600'`                                                     |
-|                      | `footnotes.list`      | `string` | Footnotes list             | `''`                                                                                                                  |
-|                      | `footnotes.item`      | `string` | Footnote item              | `'flex-row gap-2 mb-1'`                                                                                               |
-|                      | `footnotes.ref`       | `string` | Footnote reference         | `'text-neutral-500 dark:text-neutral-400 font-mono text-xs'`                                                          |
-|                      | `footnotes.backref`   | `string` | Footnote back reference    | `'text-neutral-500 dark:text-neutral-400 font-mono text-xs'`                                                          |
-|                      | `footnotes.content`   | `string` | Footnote content           | `''`                                                                                                                  |
-| **Definition Lists** |                       |          |                            |                                                                                                                       |
-|                      | `deflist.container`   | `string` | Definition list container  | `'my-3'`                                                                                                              |
-|                      | `deflist.row`         | `string` | Definition row             | `'mb-2'`                                                                                                              |
-|                      | `deflist.dt`          | `string` | Definition term            | `'font-semibold text-neutral-700 dark:text-neutral-300'`                                                              |
-|                      | `deflist.dd`          | `string` | Definition description     | `'pl-4 text-neutral-700 dark:text-neutral-300'`                                                                       |
+| Element              | Attribute Path       | Type         | Description                | React Native Style Properties                                                      |
+| -------------------- | -------------------- | ------------ | -------------------------- | ---------------------------------------------------------------------------------- |
+| **Root Container**   | `root`               | `ViewStyle`  | Root container styling     | `padding`, `gap`, etc.                                                             |
+| **Text Elements**    |                      |              |                            |                                                                                    |
+|                      | `paragraph`          | `TextStyle`  | Paragraph text styling     | `color`, `fontSize`, `lineHeight`, etc.                                            |
+|                      | `break`              | `TextStyle`  | Line break styling         | `color`, `fontSize`, etc.                                                          |
+|                      | `strong`             | `TextStyle`  | Bold text styling          | `fontWeight`, `color`, etc.                                                        |
+|                      | `em`                 | `TextStyle`  | Italic text styling        | `fontStyle`, `color`, etc.                                                         |
+|                      | `strikethrough`      | `TextStyle`  | Strikethrough text styling | `textDecorationLine`, `color`, etc.                                                |
+| **Headings**         |                      |              |                            |                                                                                    |
+|                      | `h1`                 | `TextStyle`  | H1 heading styling         | `fontSize`, `fontWeight`, `color`, `marginTop`, etc.                               |
+|                      | `h2`                 | `TextStyle`  | H2 heading styling         | `fontSize`, `fontWeight`, `color`, `marginTop`, etc.                               |
+|                      | `h3`                 | `TextStyle`  | H3 heading styling         | `fontSize`, `fontWeight`, `color`, `marginTop`, etc.                               |
+|                      | `h4`                 | `TextStyle`  | H4 heading styling         | `fontSize`, `fontWeight`, `color`, `marginTop`, etc.                               |
+|                      | `h5`                 | `TextStyle`  | H5 heading styling         | `fontSize`, `fontWeight`, `color`, `marginTop`, etc.                               |
+|                      | `h6`                 | `TextStyle`  | H6 heading styling         | `fontSize`, `fontWeight`, `color`, `marginTop`, etc.                               |
+| **Links & Media**    |                      |              |                            |                                                                                    |
+|                      | `link`               | `TextStyle`  | Link styling               | `color`, `textDecorationLine`, etc.                                                |
+|                      | `image`              | `ImageStyle` | Image styling              | `width`, `height`, `marginVertical`, `borderRadius`, etc.                          |
+| **Code**             |                      |              |                            |                                                                                    |
+|                      | `codeBlockContainer` | `ViewStyle`  | Code block container       | `backgroundColor`, `borderRadius`, `padding`, `marginVertical`, etc.               |
+|                      | `codeBlockText`      | `TextStyle`  | Code block text            | `fontFamily`, `fontSize`, `color`, `padding`, etc.                                 |
+|                      | `codeInline`         | `TextStyle`  | Inline code styling        | `fontFamily`, `fontSize`, `backgroundColor`, `padding`, etc.                       |
+| **Block Elements**   |                      |              |                            |                                                                                    |
+|                      | `blockquote`         | `ViewStyle`  | Blockquote styling         | `borderLeftWidth`, `paddingLeft`, `marginVertical`, `borderLeftColor`, etc.        |
+|                      | `hr`                 | `ViewStyle`  | Horizontal rule styling    | `height`, `backgroundColor`, `marginVertical`, etc.                                |
+| **Lists**            |                      |              |                            |                                                                                    |
+|                      | `listUl`             | `ViewStyle`  | Unordered list container   | `marginVertical`, `marginLeft`, etc.                                               |
+|                      | `listOl`             | `ViewStyle`  | Ordered list container     | `marginVertical`, `marginLeft`, etc.                                               |
+|                      | `listItem`           | `ViewStyle`  | List item styling          | `flexDirection`, `alignItems`, `marginBottom`, etc.                                |
+|                      | `listBullet`         | `TextStyle`  | List bullet/number styling | `width`, `textAlign`, `color`, etc.                                                |
+|                      | `listContent`        | `ViewStyle`  | List item content          | `flex`, etc.                                                                       |
+| **Tables**           |                      |              |                            |                                                                                    |
+|                      | `tableContainer`     | `ViewStyle`  | Table container            | `borderWidth`, `borderColor`, `marginVertical`, `borderRadius`, `overflow`, etc.   |
+|                      | `tableThead`         | `ViewStyle`  | Table header section       | `backgroundColor`, etc.                                                            |
+|                      | `tableTbody`         | `ViewStyle`  | Table body section         | Any `ViewStyle` properties                                                         |
+|                      | `tableRow`           | `ViewStyle`  | Table row styling          | `flexDirection`, etc.                                                              |
+|                      | `tableTh`            | `ViewStyle`  | Table header cell          | `padding`, `borderWidth`, `borderColor`, `fontWeight`, etc.                        |
+|                      | `tableTd`            | `ViewStyle`  | Table data cell            | `padding`, `borderWidth`, `borderColor`, `flex`, etc.                              |
+|                      | `tableThText`        | `TextStyle`  | Table header text          | `color`, etc.                                                                      |
+|                      | `tableTdText`        | `TextStyle`  | Table data text            | `color`, etc.                                                                      |
+| **Checklists**       |                      |              |                            |                                                                                    |
+|                      | `checklistList`      | `ViewStyle`  | Checklist container        | `marginVertical`, etc.                                                             |
+|                      | `checklistItem`      | `ViewStyle`  | Checklist item             | `flexDirection`, `alignItems`, `gap`, `marginBottom`, etc.                         |
+|                      | `checklistBox`       | `ViewStyle`  | Checkbox styling           | `width`, `height`, `textAlign`, `borderWidth`, `borderColor`, `borderRadius`, etc. |
+|                      | `checklistChecked`   | `TextStyle`  | Checked checkbox           | `backgroundColor`, `color`, etc.                                                   |
+|                      | `checklistUnchecked` | `TextStyle`  | Unchecked checkbox         | `color`, etc.                                                                      |
+|                      | `checklistLabel`     | `TextStyle`  | Checklist label            | `color`, etc.                                                                      |
+| **Footnotes**        |                      |              |                            |                                                                                    |
+|                      | `footnotesContainer` | `ViewStyle`  | Footnotes container        | `marginTop`, `paddingTop`, `borderTopWidth`, `borderTopColor`, etc.                |
+|                      | `footnotesItem`      | `ViewStyle`  | Footnote item              | `flexDirection`, `gap`, `marginBottom`, etc.                                       |
+|                      | `footnotesRef`       | `TextStyle`  | Footnote reference         | `color`, `fontFamily`, `fontSize`, etc.                                            |
+|                      | `footnotesBackref`   | `TextStyle`  | Footnote back reference    | `color`, `fontFamily`, `fontSize`, etc.                                            |
+| **Definition Lists** |                      |              |                            |                                                                                    |
+|                      | `deflistContainer`   | `ViewStyle`  | Definition list container  | `marginVertical`, etc.                                                             |
+|                      | `deflistRow`         | `ViewStyle`  | Definition row             | `marginBottom`, etc.                                                               |
+|                      | `deflistDt`          | `TextStyle`  | Definition term            | `fontWeight`, `color`, etc.                                                        |
+|                      | `deflistDd`          | `TextStyle`  | Definition description     | `paddingLeft`, `color`, etc.                                                       |
 
 ### Example: Custom Theme
 
 ```tsx
-const darkTheme = {
-  root: 'bg-gray-900 p-4',
-  paragraph: 'text-gray-100 mb-3',
-  heading: {
-    h1: 'text-white text-3xl font-bold mb-4',
-    h2: 'text-gray-200 text-2xl font-semibold mb-3',
-  },
-  link: 'text-blue-400 underline',
-  codeBlock: {
-    container: 'bg-gray-800 rounded-lg border border-gray-700',
-    text: 'text-green-400 font-mono p-3',
-  },
-};
+import { StyleSheet } from 'react-native';
 
-<MarkdownItRN md={markdown} classes={darkTheme} />;
+const darkTheme = StyleSheet.create({
+  root: {
+    backgroundColor: '#111827',
+    padding: 16,
+  },
+  paragraph: {
+    color: '#f3f4f6',
+    marginBottom: 12,
+  },
+  h1: {
+    color: '#ffffff',
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 16,
+  },
+  h2: {
+    color: '#e5e7eb',
+    fontSize: 20,
+    fontWeight: '600',
+    marginBottom: 12,
+  },
+  link: {
+    color: '#60a5fa',
+    textDecorationLine: 'underline',
+  },
+  codeBlockContainer: {
+    backgroundColor: '#1f2937',
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#374151',
+  },
+  codeBlockText: {
+    color: '#10b981',
+    fontFamily: 'monospace',
+    padding: 12,
+  },
+});
+
+<MarkdownItRN
+  md={markdown}
+  styles={{
+    root: darkTheme.root,
+    paragraph: darkTheme.paragraph,
+    h1: darkTheme.h1,
+    h2: darkTheme.h2,
+    link: darkTheme.link,
+    codeBlockContainer: darkTheme.codeBlockContainer,
+    codeBlockText: darkTheme.codeBlockText,
+  }}
+/>;
 ```
 
 ## Plugins
@@ -207,11 +297,15 @@ Use the `configure` prop to customize the markdown-it instance:
 <MarkdownItRN
   md={markdown}
   configure={(md) => {
-    // Disable a plugin
-    md.disable('linkify');
-
-    // Enable typographer
-    md.enable('typographer');
+    // markdown-it defaults used by this component:
+    // - html: false
+    // - linkify: true
+    // - typographer: true
+    // Plugins enabled by default:
+    // - emoji, footnote, deflist
+    // You can tweak options or enable/disable plugins as needed:
+    md.set({ linkify: true, typographer: true });
+    // md.disable('linkify');
 
     // Add custom plugins
     // md.use(customPlugin);
@@ -220,6 +314,12 @@ Use the `configure` prop to customize the markdown-it instance:
   }}
 />
 ```
+
+### Markdown-it Defaults
+
+- **HTML** rendering is disabled (`html: false`).
+- **Linkify** (auto-link URLs) is enabled.
+- **Typographer** (smart quotes, dashes) is enabled.
 
 ## Supported Markdown Features
 
@@ -238,6 +338,48 @@ Use the `configure` prop to customize the markdown-it instance:
 - ✅ Emoji support
 
 [^1]: Like this footnote!
+
+## Example App
+
+This repository includes a complete example app in the `example/` directory that demonstrates all the features and shows how to use the component with **NativeWind** for styling.
+
+### Running the Example
+
+```bash
+cd example
+npm install
+npm start
+```
+
+### NativeWind Integration
+
+The example app shows how to use `markdown-it-rn` with NativeWind by using `remapProps` to map style props to className props:
+
+```tsx
+import { remapProps } from 'nativewind';
+import { MarkdownItRN } from 'markdown-it-rn';
+
+const NativewindMarkdownItRN = remapProps(MarkdownItRN, {
+  rootClassName: 'root',
+  paragraphClassName: 'paragraph',
+  h1ClassName: 'h1',
+  h2ClassName: 'h2',
+  // ... map all style props to className equivalents
+});
+
+// Usage with Tailwind classes
+<NativewindMarkdownItRN
+  md={markdown}
+  rootClassName="p-3 gap-2"
+  h1ClassName="mt-4 mb-2 text-4xl font-extrabold tracking-tight"
+  paragraphClassName="leading-relaxed mb-3"
+  linkClassName="underline text-blue-600"
+  codeBlockContainerClassName="my-3 rounded-md border border-neutral-200"
+  // ... other Tailwind classes
+/>;
+```
+
+The example demonstrates comprehensive markdown rendering with a clean, modern design using Tailwind CSS classes.
 
 ## Contributing
 

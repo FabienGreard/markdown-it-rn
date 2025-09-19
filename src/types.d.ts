@@ -1,4 +1,5 @@
 import React from 'react';
+import type { TextStyle, ViewStyle, ImageStyle } from 'react-native';
 
 import type MarkdownIt from 'markdown-it';
 
@@ -9,61 +10,61 @@ export type RenderResult = { nodes: React.ReactNode[]; index: number };
 export type InlineRenderResult = { nodes: React.ReactNode[]; index: number };
 export type TableRenderResult = { node: React.ReactNode; index: number };
 
-export type ClassMap = {
-  root?: string;
-  paragraph?: string;
-  heading?: {
-    h1?: string;
-    h2?: string;
-    h3?: string;
-    h4?: string;
-    h5?: string;
-    h6?: string;
-  };
-  link?: string;
-  image?: string;
-  codeBlock?: { container?: string; text?: string };
-  codeInline?: string;
-  blockquote?: string;
-  list?: {
-    ul?: string;
-    ol?: string;
-    item?: string;
-    bullet?: string;
-    content?: string;
-  };
-  hr?: string;
-  table?: {
-    container?: string;
-    thead?: string;
-    tbody?: string;
-    row?: string;
-    th?: string;
-    td?: string;
-    thText?: string;
-    tdText?: string;
-  };
-  checklist?: {
-    list?: string;
-    item?: string;
-    box?: string;
-    checked?: string;
-    unchecked?: string;
-    label?: string;
-  };
-  footnotes?: {
-    container?: string;
-    list?: string;
-    item?: string;
-    ref?: string;
-    backref?: string;
-    content?: string;
-  };
-  deflist?: { container?: string; row?: string; dt?: string; dd?: string };
-  break?: string;
-  strong?: string;
-  em?: string;
-  strikethrough?: string;
+export type StyleMap = {
+  root?: ViewStyle;
+  paragraph?: TextStyle;
+  // Individual heading styles
+  h1?: TextStyle;
+  h2?: TextStyle;
+  h3?: TextStyle;
+  h4?: TextStyle;
+  h5?: TextStyle;
+  h6?: TextStyle;
+  link?: TextStyle;
+  image?: ImageStyle;
+  // Code block styles
+  codeBlockContainer?: ViewStyle;
+  codeBlockText?: TextStyle;
+  codeInline?: TextStyle;
+  blockquote?: TextStyle;
+  // List styles
+  listUl?: ViewStyle;
+  listOl?: ViewStyle;
+  listItem?: ViewStyle;
+  listBullet?: TextStyle;
+  listContent?: ViewStyle;
+  hr?: ViewStyle;
+  // Table styles
+  tableContainer?: ViewStyle;
+  tableThead?: ViewStyle;
+  tableTbody?: ViewStyle;
+  tableRow?: ViewStyle;
+  tableTh?: ViewStyle;
+  tableTd?: ViewStyle;
+  tableThText?: TextStyle;
+  tableTdText?: TextStyle;
+  // Checklist styles
+  checklistList?: ViewStyle;
+  checklistItem?: ViewStyle;
+  checklistBox?: ViewStyle;
+  checklistChecked?: TextStyle;
+  checklistUnchecked?: TextStyle;
+  checklistLabel?: TextStyle;
+  // Footnotes styles
+  footnotesContainer?: ViewStyle;
+  footnotesItem?: ViewStyle;
+  footnotesRef?: TextStyle;
+  footnotesBackref?: TextStyle;
+  // Definition list styles
+  deflistContainer?: ViewStyle;
+  deflistRow?: ViewStyle;
+  deflistDt?: TextStyle;
+  deflistDd?: TextStyle;
+  // Inline styles
+  break?: TextStyle;
+  strong?: TextStyle;
+  em?: TextStyle;
+  strikethrough?: TextStyle;
 };
 
 export type { default as Token } from 'markdown-it/lib/token.mjs';

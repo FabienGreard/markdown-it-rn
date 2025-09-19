@@ -2,7 +2,59 @@ import React from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { ScrollView, Linking } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
-import { MarkdownItRN, defaultClasses } from 'markdown-it-rn';
+import { MarkdownItRN } from 'markdown-it-rn';
+
+import { remapProps } from 'nativewind';
+
+/* usage with nativewind */
+const NativewindMarkdownItRN = remapProps(MarkdownItRN, {
+  rootClassName: 'root',
+  paragraphClassName: 'paragraph',
+  h1ClassName: 'h1',
+  h2ClassName: 'h2',
+  h3ClassName: 'h3',
+  h4ClassName: 'h4',
+  h5ClassName: 'h5',
+  h6ClassName: 'h6',
+  linkClassName: 'link',
+  imageClassName: 'image',
+  codeBlockContainerClassName: 'codeBlockContainer',
+  codeBlockTextClassName: 'codeBlockText',
+  codeInlineClassName: 'codeInline',
+  blockquoteClassName: 'blockquote',
+  listUlClassName: 'listUl',
+  listOlClassName: 'listOl',
+  listItemClassName: 'listItem',
+  listBulletClassName: 'listBullet',
+  listContentClassName: 'listContent',
+  hrClassName: 'hr',
+  tableContainerClassName: 'tableContainer',
+  tableTheadClassName: 'tableThead',
+  tableTbodyClassName: 'tableTbody',
+  tableRowClassName: 'tableRow',
+  tableThClassName: 'tableTh',
+  tableTdClassName: 'tableTd',
+  tableThTextClassName: 'tableThText',
+  tableTdTextClassName: 'tableTdText',
+  checklistListClassName: 'checklistList',
+  checklistItemClassName: 'checklistItem',
+  checklistBoxClassName: 'checklistBox',
+  checklistCheckedClassName: 'checklistChecked',
+  checklistUncheckedClassName: 'checklistUnchecked',
+  checklistLabelClassName: 'checklistLabel',
+  footnotesContainerClassName: 'footnotesContainer',
+  footnotesItemClassName: 'footnotesItem',
+  footnotesRefClassName: 'footnotesRef',
+  footnotesBackrefClassName: 'footnotesBackref',
+  deflistContainerClassName: 'deflistContainer',
+  deflistRowClassName: 'deflistRow',
+  deflistDtClassName: 'deflistDt',
+  deflistDdClassName: 'deflistDd',
+  breakClassName: 'break',
+  strongClassName: 'strong',
+  emClassName: 'em',
+  strikethroughClassName: 'strikethrough',
+});
 
 import './global.css';
 
@@ -102,14 +154,59 @@ Term 2
 export default function App() {
   return (
     <SafeAreaProvider>
-      <SafeAreaView className="flex-1">
+      <SafeAreaView className="flex-1 bg-white">
         <StatusBar style="auto" />
         <ScrollView contentInsetAdjustmentBehavior="automatic">
-          <MarkdownItRN
+          <NativewindMarkdownItRN
             md={SAMPLE}
-            className="p-4"
             onLinkPress={(href) => Linking.openURL(href)}
-            classes={defaultClasses}
+            /* component style override usage with nativewind */
+            rootClassName="p-3 gap-2"
+            paragraphClassName="leading-relaxed mb-3"
+            breakClassName=""
+            strongClassName="font-bold"
+            emClassName="italic"
+            strikethroughClassName="line-through"
+            h1ClassName="mt-4 mb-2 text-4xl font-extrabold tracking-tight "
+            h2ClassName="mt-3 mb-2 text-3xl font-bold tracking-tight "
+            h3ClassName="mt-3 mb-2 text-2xl font-semibold "
+            h4ClassName="mt-2 mb-1 text-xl font-semibold "
+            h5ClassName="mt-2 mb-1 text-lg font-medium"
+            h6ClassName="mt-1 mb-1 text-sm font-medium uppercase tracking-wide"
+            linkClassName="underline"
+            imageClassName="w-full h-48 my-3 rounded-md"
+            codeBlockContainerClassName="my-3 rounded-md border border-neutral-200"
+            codeBlockTextClassName="font-mono text-sm p-3 "
+            codeInlineClassName="font-mono text-sm px-1.5 py-0.5 rounded "
+            blockquoteClassName="border-l-4 pl-3 my-3  italic"
+            listUlClassName="my-2 ml-5"
+            listOlClassName="my-2 ml-5"
+            listItemClassName="flex-row items-start mb-1"
+            listBulletClassName="w-5 text-left "
+            listContentClassName="flex-1"
+            hrClassName="my-4 h-px"
+            tableContainerClassName="border my-3 rounded-md overflow-hidden"
+            tableTheadClassName=""
+            tableTbodyClassName=""
+            tableRowClassName="flex-row"
+            tableThClassName="p-3 border font-semibold text-left flex-1"
+            tableTdClassName="p-3 border text-left flex-1"
+            tableThTextClassName=""
+            tableTdTextClassName=""
+            checklistListClassName="my-2"
+            checklistItemClassName="flex-row items-center gap-2 mb-2"
+            checklistBoxClassName="w-5 h-5 text-center border rounded-sm"
+            checklistCheckedClassName=""
+            checklistUncheckedClassName=""
+            checklistLabelClassName=""
+            footnotesContainerClassName="mt-6 pt-4 border-t"
+            footnotesItemClassName="flex-row gap-2 mb-1"
+            footnotesRefClassName="font-mono text-xs"
+            footnotesBackrefClassName="font-mono text-xs"
+            deflistContainerClassName="my-3"
+            deflistRowClassName="mb-2"
+            deflistDtClassName="font-semibold "
+            deflistDdClassName="pl-4 "
           />
         </ScrollView>
       </SafeAreaView>

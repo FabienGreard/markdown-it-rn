@@ -11,7 +11,7 @@ export default [
   eslint.configs.recommended,
   {
     files: ['**/*.{ts,tsx}'],
-    languageOptions: { 
+    languageOptions: {
       parser: tsParser,
       globals: {
         console: 'readonly',
@@ -33,5 +33,3 @@ export default [
     settings: { react: { version: 'detect' } },
   },
 ];
-
-

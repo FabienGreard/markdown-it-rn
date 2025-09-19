@@ -4,13 +4,13 @@ import { Text, Image, TouchableWithoutFeedback } from 'react-native';
 
 import { enforceRasterFormat } from '../utils/enforceRasterFormat';
 
-import type { InlineRenderResult, LinkHandler, Token, ClassMap } from '../types';
+import type { InlineRenderResult, LinkHandler, Token, StyleMap } from '../types';
 
 export function renderInlineTokens(
   tokens: Token[],
   startIndex = 0,
   onLinkPress?: LinkHandler,
-  classes: ClassMap = {},
+  styles: StyleMap = {},
   keyPrefix = 'inl',
 ): InlineRenderResult {
   const out: React.ReactNode[] = [];
@@ -31,7 +31,7 @@ export function renderInlineTokens(
         case 'softbreak':
         case 'hardbreak':
           inner.push(
-            <Text key={`${keyPrefix}-br-${k++}`} className={classes.break ?? ''}>
+            <Text key={`${keyPrefix}-br-${k++}`} style={styles.break}>
               {'\n'}
             </Text>,
           );
@@ -39,7 +39,7 @@ export function renderInlineTokens(
 
         case 'code_inline':
           inner.push(
-            <Text key={`${keyPrefix}-ci-${k++}`} className={classes.codeInline ?? ''}>
+            <Text key={`${keyPrefix}-ci-${k++}`} style={styles.codeInline}>
               {t.content}
             </Text>,
           );
@@ -48,7 +48,7 @@ export function renderInlineTokens(
         case 'strong_open': {
           const children = takeGroup('strong_close');
           inner.push(
-            <Text key={`${keyPrefix}-st-${k++}`} className={classes.strong ?? ''}>
+            <Text key={`${keyPrefix}-st-${k++}`} style={styles.strong}>
               {children}
             </Text>,
           );
@@ -58,7 +58,7 @@ export function renderInlineTokens(
         case 'em_open': {
           const children = takeGroup('em_close');
           inner.push(
-            <Text key={`${keyPrefix}-em-${k++}`} className={classes.em ?? ''}>
+            <Text key={`${keyPrefix}-em-${k++}`} style={styles.em}>
               {children}
             </Text>,
           );
@@ -68,7 +68,7 @@ export function renderInlineTokens(
         case 's_open': {
           const children = takeGroup('s_close');
           inner.push(
-            <Text key={`${keyPrefix}-s-${k++}`} className={classes.strikethrough ?? ''}>
+            <Text key={`${keyPrefix}-s-${k++}`} style={styles.strikethrough}>
               {children}
             </Text>,
           );
@@ -84,7 +84,7 @@ export function renderInlineTokens(
               key={`${keyPrefix}-a-${k++}`}
               onPress={() => onLinkPress?.(href)}
             >
-              <Text className={classes.link ?? ''}>{children}</Text>
+              <Text style={styles.link}>{children}</Text>
             </TouchableWithoutFeedback>,
           );
           break;
@@ -101,8 +101,7 @@ export function renderInlineTokens(
                 key={`${keyPrefix}-img-${k++}`}
                 source={{ uri: src }}
                 accessibilityLabel={alt}
-                className={classes.image ?? ''}
-                style={!classes.image ? { width: 160, height: 160 } : undefined}
+                style={styles.image || { width: 160, height: 160 }}
                 onError={(e: { nativeEvent?: { error?: string } }) => {
                   console.warn('Image load error:', src, e.nativeEvent?.error);
                 }}
@@ -116,7 +115,7 @@ export function renderInlineTokens(
         case 'footnote_ref': {
           const id = (t.meta && (t.meta.id ?? t.meta.label)) ?? 0;
           inner.push(
-            <Text key={`${keyPrefix}-fnr-${k++}`} className={classes.footnotes?.ref ?? ''}>
+            <Text key={`${keyPrefix}-fnr-${k++}`} style={styles.footnotesRef}>
               [{Number(id) + 1}]
             </Text>,
           );
@@ -127,7 +126,7 @@ export function renderInlineTokens(
         case 'footnote_ref_open': {
           const children = takeGroup('footnote_ref_close');
           inner.push(
-            <Text key={`${keyPrefix}-fnro-${k++}`} className={classes.footnotes?.ref ?? ''}>
+            <Text key={`${keyPrefix}-fnro-${k++}`} style={styles.footnotesRef}>
               {children}
             </Text>,
           );

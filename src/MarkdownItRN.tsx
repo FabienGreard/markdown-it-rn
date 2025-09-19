@@ -4,33 +4,34 @@ import { View } from 'react-native';
 
 import { buildMd } from './engine/buildMd';
 import { renderBlocks } from './render/blocks';
-import type { Configure, LinkHandler, ClassMap } from './types';
+import type { Configure, LinkHandler, StyleMap } from './types';
 import { unwrapPastedMarkdown } from './utils/unwrapPastedMarkdown';
-import { defaultClasses } from './themes/default';
+import { defaultStyles } from './themes/default';
 
 export type MarkdownItRNProps = {
   md: string;
-  className?: string; // container classes (NativeWind)
-  classes?: ClassMap; // override classNames for every component (defaults to empty strings)
+  styles?: StyleMap; // override styles for every component
   onLinkPress?: LinkHandler;
   configure?: Configure; // markdown-it plugins/options hook
   autoUnfence?: boolean;
-};
+} & StyleMap;
 
 export const MarkdownItRN = memo(function MarkdownItRN({
   md,
-  className,
-  classes = defaultClasses,
+  styles,
   onLinkPress,
   configure,
   autoUnfence = true,
+  ...stylesOverride
 }: MarkdownItRNProps) {
   const source = autoUnfence ? unwrapPastedMarkdown(md) : md;
 
   const mdEngine = buildMd(configure);
   const tokens = mdEngine.parse(source, {});
 
-  const { nodes } = renderBlocks(tokens, 0, onLinkPress, classes ?? {}, 'root');
+  styles = { ...defaultStyles, ...styles, ...stylesOverride };
 
-  return <View className={`${className ?? ''} ${classes?.root ?? ''}`.trim()}>{nodes}</View>;
+  const { nodes } = renderBlocks(tokens, 0, onLinkPress, styles ?? {}, 'root');
+
+  return <View style={styles?.root}>{nodes}</View>;
 });
